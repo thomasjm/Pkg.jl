@@ -1370,7 +1370,8 @@ function _resolve(io::IO, env::EnvCache, registries::Vector{Registry.RegistryIns
 end
 
 function add(ctx::Context, pkgs::Vector{PackageSpec}, new_git=Set{UUID}();
-             preserve::PreserveLevel=default_preserve(), platform::AbstractPlatform=HostPlatform())
+             preserve::PreserveLevel=default_preserve(), platform::AbstractPlatform=HostPlatform()
+             dry_run=false)
     assert_can_add(ctx, pkgs)
     # load manifest data
     for (i, pkg) in pairs(pkgs)
@@ -1382,6 +1383,12 @@ function add(ctx::Context, pkgs::Vector{PackageSpec}, new_git=Set{UUID}();
     # resolve
     pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, pkgs, preserve, ctx.julia_version)
     update_manifest!(ctx.env, pkgs, deps_map, ctx.julia_version)
+
+    if dry_run
+        print("RETURNING EARLY")
+        return
+    end
+
     new_apply = download_source(ctx)
     fixup_ext!(ctx.env, pkgs)
 

@@ -224,7 +224,7 @@ function develop(ctx::Context, pkgs::Vector{PackageSpec}; shared::Bool=true,
 end
 
 function add(ctx::Context, pkgs::Vector{PackageSpec}; preserve::PreserveLevel=Operations.default_preserve(),
-             platform::AbstractPlatform=HostPlatform(), kwargs...)
+             platform::AbstractPlatform=HostPlatform(), dry_run=false, kwargs...)
     require_not_empty(pkgs, :add)
     Context!(ctx; kwargs...)
 
@@ -272,7 +272,7 @@ function add(ctx::Context, pkgs::Vector{PackageSpec}; preserve::PreserveLevel=Op
         end
     end
 
-    Operations.add(ctx, pkgs, new_git; preserve, platform)
+    Operations.add(ctx, pkgs, new_git; preserve, platform, dry_run)
     return
 end
 
